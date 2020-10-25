@@ -45,21 +45,21 @@ fun Application.module(testing: Boolean = false) {
             val title = call.request.queryParameters["title"]
             val date = call.request.queryParameters["date"]
             val isSolved = false
-            val cObj = Claim(id, title, date, isSolved)
-            val dao = ClaimDao().addClaim(cObj)*/
+            val claimObj = Claim(id, title, date, isSolved)
+            val dao = ClaimDao().addClaim(claimObj)*/
 
             //Take the title and date from json string, convert to json, make new claim, add to claim list
             val gsonSt = Gson().fromJson(str, Claim::class.java) //Convert to gson string from a json
-            val claimObj = Claim(UUID.randomUUID(), gsonSt.title, gsonSt.date, isSolved = false) //Make a new claim object
+            val claimObj = Claim(UUID.randomUUID(), gsonSt.title, gsonSt.date, isSolved = false) //Make a new claim object, isSolved will default to being false.
             val dao = ClaimDao().addClaim(claimObj) //adding to database
-            val response = String.format("\nUUID %s \nTitle %s \nDate %s \nisSolved %s", claimObj.id, claimObj.title, claimObj.date, claimObj.isSolved)
+            val response = String.format("\nUUID %s \nTitle %s \nDate %s \nisSolved %s", claimObj.id, claimObj.title, claimObj.date, claimObj.isSolved) //Print this to postman and the terminal.
 
             //JSON serialization/deserialization
             // GSON (Google Library)
-            println("HTTP message is using POST with method /post ${contType} ${str}")
-            println(response)
+            println("HTTP message is using POST with method /post ${contType} ${str}") //Print out success http message
+            println(response) //Print the response from above
             call.respondText("The POST request was successfully processed. " + response,
-                status= HttpStatusCode.OK, contentType = ContentType.Text.Plain)
+                status= HttpStatusCode.OK, contentType = ContentType.Text.Plain) //Print to postman
         }
     }
 }
