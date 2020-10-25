@@ -24,8 +24,11 @@ fun Application.module(testing: Boolean = false) {
         get("/ClaimService/getAll") {
             val claimList = ClaimDao().getAll()
             println("The number of claims : ${claimList.size}")
+            for (claim in claimList) {
+                println("$claim")
+            }
             //JSON Serialization/Deserialization
-            val respJsonStr = Gson().toJson(claimList)
+            val respJsonStr = Gson().toJson(claimList) //Convert to json, print out
             call.respondText(respJsonStr, status = HttpStatusCode.OK, contentType = ContentType.Application.Json) //Send text using contentType
         }
 
@@ -35,10 +38,27 @@ fun Application.module(testing: Boolean = false) {
             val dataLength = data.availableForRead //length of data in body
             val output = ByteArray(dataLength)
             data.readAvailable(output)
-            val str = String(output) //For further processing
+            val str = String(output) //For further processing, save the string
 
+
+            /*val id = UUID.randomUUID()
+            val title = call.request.queryParameters["title"]
+            val date = call.request.queryParameters["date"]
+            val isSolved = false
+            val cObj = Claim(id, title, date, isSolved)
+            val dao = ClaimDao().addClaim(cObj)*/
+
+            //Take the title and date from json string, convert to json, make new claim, add to claim list
+            val gsonSt = Gson().fromJson(str, Claim::class.java) //Convert to gson string from a json
+            val claimObj = Claim(UUID.randomUUID(), gsonSt.title, gsonSt.date, isSolved = false) //Make a new claim object
+            val dao = ClaimDao().addClaim(claimObj) //adding to database
+            val response = String.format("\nUUID %s \nTitle %s \nDate %s \nisSolved %s", claimObj.id, claimObj.title, claimObj.date, claimObj.isSolved)
+
+            //JSON serialization/deserialization
+            // GSON (Google Library)
             println("HTTP message is using POST with method /post ${contType} ${str}")
-            call.respondText("The POST request was successfully processed. ",
+            println(response)
+            call.respondText("The POST request was successfully processed. " + response,
                 status= HttpStatusCode.OK, contentType = ContentType.Text.Plain)
         }
     }

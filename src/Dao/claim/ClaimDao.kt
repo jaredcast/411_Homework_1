@@ -29,7 +29,7 @@ class ClaimDao : Dao() {
         var claimsList : MutableList<Claim> = mutableListOf()
         val st = conn?.prepare(sqlStmt)
         while (st!!.step()) {
-            val id = st.columnString(0)
+            val id = st.columnString(0) //", you will use a Text column to store the string representation of UUID. "
             val title = st.columnString(1) //These are strings
             val date = st.columnString(2)
             val isSolved = st.columnNull(3)
