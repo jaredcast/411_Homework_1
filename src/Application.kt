@@ -32,7 +32,7 @@ fun Application.module(testing: Boolean = false) {
             call.respondText(respJsonStr, status = HttpStatusCode.OK, contentType = ContentType.Application.Json) //Send text using contentType
         }
 
-        post("/ClaimService/add") {
+        post("/ClaimService/addClaim") {
             val contType = call.request.contentType()
             val data = call.request.receiveChannel()
             val dataLength = data.availableForRead //length of data in body
